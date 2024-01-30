@@ -7,7 +7,7 @@
         android:required="true" />
 
     <application
-        android:name="fr.mastersime.panshare.MyApplication"
+        android:name="fr.mastersime.panshare.PanShare"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
