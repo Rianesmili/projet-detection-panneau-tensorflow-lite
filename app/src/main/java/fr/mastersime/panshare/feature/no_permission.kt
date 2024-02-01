@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 fun NoPermissionScreen(
     onRequestPermission: () -> Unit
 ) {
-
     NoPermissionContent(
         onRequestPermission = onRequestPermission
     )
@@ -38,12 +37,4 @@ private fun NoPermissionContent(
             Text(text = "Grant permission")
         }
     }
-}
-
-@Preview
-@Composable
-private fun Preview_NoPermissionContent() {
-    NoPermissionContent(
-        onRequestPermission = {}
-    )
 }

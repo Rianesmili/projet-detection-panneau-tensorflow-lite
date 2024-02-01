@@ -1,10 +1,11 @@
-package fr.mastersime.panshare.feature
+package fr.mastersime.panshare.feature.CameraScreen
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.mastersime.panshare.data.SavePhotoToGalleryUseCase
+import fr.mastersime.panshare.feature.CameraState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
