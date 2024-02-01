@@ -43,18 +43,40 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.mastersime.panshare.core.utilis.rotateBitmap
 import java.util.concurrent.Executor
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import java.security.Permission
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.shouldShowRationale
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen() {
     val viewModel: CameraViewModel = hiltViewModel()
 
     val cameraState: CameraState by viewModel.state.collectAsStateWithLifecycle()
 
-    CameraContent(
-        onPhotoCaptured = viewModel::storePhotoInGallery,
-        lastCapturedPhoto = cameraState.capturedImage
-    )
+    val cameraPermissionState = rememberPermissionState(permission = android.Manifest.permission.CAMERA)
+
+    when {
+        cameraPermissionState.status.isGranted -> {
+            CameraContent(
+                onPhotoCaptured = viewModel::storePhotoInGallery,
+                lastCapturedPhoto = cameraState.capturedImage
+            )
+        }
+        cameraPermissionState.status.shouldShowRationale -> {
+            NoPermissionScreen(
+                onRequestPermission = { cameraPermissionState.launchPermissionRequest() }
+            )
+        }
+        else -> {
+            NoPermissionScreen(
+                onRequestPermission = { cameraPermissionState.launchPermissionRequest() }
+            )
+        }
+    }
 }
 
 @Composable
