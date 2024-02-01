@@ -10,7 +10,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
-import fr.mastersime.panshare.feature.CameraState
 import fr.mastersime.panshare.feature.NoPermissionScreen
 
 
@@ -23,9 +22,11 @@ fun CameraScreen(navController: NavController) {
 
     val cameraPermissionState =
         rememberPermissionState(permission = android.Manifest.permission.CAMERA)
+    val locationPermissionState =
+        rememberPermissionState(permission = android.Manifest.permission.ACCESS_FINE_LOCATION)
 
     when {
-        cameraPermissionState.status.isGranted -> {
+        cameraPermissionState.status.isGranted && locationPermissionState.status.isGranted -> {
             CameraContent(
                 onPhotoCaptured = viewModel::storePhotoInGallery,
                 lastCapturedPhoto = cameraState.capturedImage,
@@ -33,12 +34,18 @@ fun CameraScreen(navController: NavController) {
             )
         }
 
-        cameraPermissionState.status.shouldShowRationale -> {
-            NoPermissionScreen(onRequestPermission = { cameraPermissionState.launchPermissionRequest() })
+        cameraPermissionState.status.shouldShowRationale || locationPermissionState.status.shouldShowRationale -> {
+            NoPermissionScreen(
+                onRequestCameraPermission = { cameraPermissionState.launchPermissionRequest() },
+                onRequestLocationPermission = { locationPermissionState.launchPermissionRequest() }
+            )
         }
 
         else -> {
-            NoPermissionScreen(onRequestPermission = { cameraPermissionState.launchPermissionRequest() })
+            NoPermissionScreen(
+                onRequestCameraPermission = { cameraPermissionState.launchPermissionRequest() },
+                onRequestLocationPermission = { locationPermissionState.launchPermissionRequest() }
+            )
         }
     }
 }

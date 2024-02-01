@@ -88,9 +88,13 @@ dependencies {
 
     ////HILT////
     implementation("com.google.dagger:hilt-android:2.48.1")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
     kapt("com.google.dagger:hilt-compiler:2.48.1")
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 
+
+    // AWAIT Google play services
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

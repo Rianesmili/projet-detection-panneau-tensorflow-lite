@@ -1,4 +1,4 @@
-package fr.mastersime.panshare.feature
+package fr.mastersime.panshare.feature.CameraScreen
 
 import android.graphics.Bitmap
 

@@ -37,10 +37,13 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import fr.mastersime.panshare.Setup.Screen
 import fr.mastersime.panshare.core.utilis.rotateBitmap
+import fr.mastersime.panshare.feature.SummuryPhoto.SummuryPhotoViewModel
+import fr.mastersime.panshare.model.PhotoData
 import java.util.concurrent.Executor
 
 
@@ -54,6 +57,9 @@ fun CameraContent(
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val cameraController: LifecycleCameraController =
         remember { LifecycleCameraController(context) }
+    val viewModel: SummuryPhotoViewModel =
+        hiltViewModel() // Ajoutez cette ligne pour obtenir une instance de votre ViewModel
+
 
     Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
         ExtendedFloatingActionButton(
@@ -76,7 +82,10 @@ fun CameraContent(
                 .padding(paddingValues),
                 factory = { context ->
                     PreviewView(context).apply {
-                        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                        layoutParams = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
                         setBackgroundColor(Color.BLACK)
                         implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                         scaleType = PreviewView.ScaleType.FILL_START
@@ -94,26 +103,34 @@ fun CameraContent(
             }
         }
     }
-}
 
-fun capturePhoto(
-    context: Context, cameraController: LifecycleCameraController, onPhotoCaptured: (Bitmap) -> Unit
-) {
-    val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
+    fun capturePhoto() {
+        val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
 
-    cameraController.takePicture(mainExecutor, object : ImageCapture.OnImageCapturedCallback() {
-        override fun onCaptureSuccess(image: ImageProxy) {
-            val correctedBitmap: Bitmap =
-                image.toBitmap().rotateBitmap(image.imageInfo.rotationDegrees)
+        cameraController.takePicture(mainExecutor, object : ImageCapture.OnImageCapturedCallback() {
+            override fun onCaptureSuccess(image: ImageProxy) {
+                val correctedBitmap: Bitmap =
+                    image.toBitmap().rotateBitmap(image.imageInfo.rotationDegrees)
 
-            onPhotoCaptured(correctedBitmap)
-            image.close()
-        }
+                onPhotoCaptured(correctedBitmap)
+                image.close()
 
-        override fun onError(exception: ImageCaptureException) {
-            Log.e("CameraContent", "Error capturing image", exception)
-        }
-    })
+                // Créez un nouvel objet PhotoData avec la photo prise par l'utilisateur
+                val newPhotoData = PhotoData(
+                    image = correctedBitmap,
+                    location = null, // Vous pouvez remplir cette valeur avec la localisation si vous l'avez
+                    type = null // Vous pouvez remplir cette valeur avec le type si vous l'avez
+                )
+
+                // Mettez à jour _photoData dans le ViewModel avec le nouvel objet PhotoData
+                viewModel.updatePhotoData(newPhotoData)
+            }
+
+            override fun onError(exception: ImageCaptureException) {
+                Log.e("CameraContent", "Error capturing image", exception)
+            }
+        })
+    }
 }
 
 @Composable
