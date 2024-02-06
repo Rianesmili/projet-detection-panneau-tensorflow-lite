@@ -55,6 +55,15 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    aaptOptions {
+        noCompress += "tflite"
+        noCompress += "lite"
+    }
+
+    buildFeatures {
+        mlModelBinding = true
+    }
 }
 
 dependencies {
@@ -89,12 +98,24 @@ dependencies {
     ////HILT////
     implementation("com.google.dagger:hilt-android:2.48.1")
     implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("androidx.datastore:datastore-core:1.0.0")
     kapt("com.google.dagger:hilt-compiler:2.48.1")
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 
 
     // AWAIT Google play services
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.2")
+
+
+    // DataStore Preferances
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
+    // TFLITE
+
+    implementation ("org.tensorflow:tensorflow-lite:2.14.0")
+    implementation ("org.tensorflow:tensorflow-lite-metadata:0.4.4")
+    implementation ("org.tensorflow:tensorflow-lite-support:0.4.4")
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -103,6 +124,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 
 
 }
