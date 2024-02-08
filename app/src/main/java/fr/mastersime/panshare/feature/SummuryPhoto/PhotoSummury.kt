@@ -19,7 +19,7 @@ import fr.mastersime.panshare.model.Location
 import fr.mastersime.panshare.model.PhotoData
 
 @Composable
-fun PhotoSummury() {
+fun PhotoSummury(type: String?) {
     val viewModel: SummuryPhotoViewModel = hiltViewModel()
     var locationModel by remember { mutableStateOf<Location?>(null) }
     var photoData by remember { mutableStateOf<PhotoData?>(null) }
@@ -29,6 +29,9 @@ fun PhotoSummury() {
         viewModel.location.collect { location ->
             locationModel = location
         }
+    }
+
+    LaunchedEffect(key1 = viewModel) {
         viewModel.photoData.collect { data ->
             photoData = data
         }
@@ -58,7 +61,7 @@ fun PhotoSummury() {
                 modifier = Modifier.padding(16.dp)
             )
             Text(
-                text = "Type de Panneau: ${photoData?.type}",
+                text = "Type de Panneau: $type",
                 modifier = Modifier.padding(16.dp)
             )
         }

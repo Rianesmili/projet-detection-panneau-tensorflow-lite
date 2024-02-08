@@ -11,12 +11,15 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
 import fr.mastersime.panshare.feature.NoPermissionScreen
+import fr.mastersime.panshare.feature.SummuryPhoto.SummuryPhotoViewModel
+import fr.mastersime.panshare.model.PhotoData
 
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(navController: NavController) {
     val viewModel: CameraViewModel = hiltViewModel()
+    val summaryPhotoViewModel: SummuryPhotoViewModel = hiltViewModel()
 
     val cameraState: CameraState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -25,12 +28,17 @@ fun CameraScreen(navController: NavController) {
     val locationPermissionState =
         rememberPermissionState(permission = android.Manifest.permission.ACCESS_FINE_LOCATION)
 
+    val photoData = PhotoData(null, null)
+
     when {
+
         cameraPermissionState.status.isGranted && locationPermissionState.status.isGranted -> {
             CameraContent(
                 onPhotoCaptured = viewModel::storePhotoInGallery,
                 lastCapturedPhoto = cameraState.capturedImage,
-                navController = navController
+                navController = navController,
+                photoData = photoData,
+                summuryPhotoViewModel = summaryPhotoViewModel
             )
         }
 
