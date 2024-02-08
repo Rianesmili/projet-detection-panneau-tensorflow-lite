@@ -30,7 +30,7 @@ fun CameraScreen(navController: NavController) {
             CameraContent(
                 onPhotoCaptured = viewModel::storePhotoInGallery,
                 lastCapturedPhoto = cameraState.capturedImage,
-                navController
+                navController = navController
             )
         }
 
